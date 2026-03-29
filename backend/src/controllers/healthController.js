@@ -16,10 +16,9 @@ const supabaseHealthCheck = async (req, res) => {
   }
 
   try {
-    const { error } = await supabase.auth.admin.listUsers({
-      page: 1,
-      perPage: 1,
-    });
+    const { error } = await supabase
+      .from("ergast_constructors")
+      .select("id", { head: true, count: "exact" });
 
     if (error) {
       return res.status(503).json({
