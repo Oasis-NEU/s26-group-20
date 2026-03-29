@@ -1,14 +1,17 @@
+'use client'
+
 import { useState } from 'react'
-import './App.css'
-import { CarsDriversSection } from './features/f1/components/CarsDriversSection'
+import './app.css'
+import { CarsDriversSection } from './components/CarsDriversSection'
 import {
   HistorySection,
   LearnSection,
   OverviewSection,
-} from './features/f1/components/ContentSections'
-import type { TabId } from './features/f1/types'
+} from './components/ContentSections'
 
-function App() {
+type TabId = 'overview' | 'learn' | 'history' | 'database'
+
+export default function AppPage() {
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
   return (
@@ -130,5 +133,3 @@ function App() {
     </div>
   )
 }
-
-export default App
