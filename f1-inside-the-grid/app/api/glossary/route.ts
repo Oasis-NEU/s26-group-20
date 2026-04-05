@@ -7,7 +7,7 @@ export async function GET() {
 
     const { data, error } = await supabase
       .from('glossary')
-      .select('id,term,short_definition')
+      .select('id,term,short_definition,long_definition,category')
       .order('term', { ascending: true })
 
     if (error) {
@@ -18,6 +18,8 @@ export async function GET() {
       id: String(row.id ?? ''),
       term: String(row.term ?? '').trim(),
       short_definition: String(row.short_definition ?? '').trim(),
+      long_definition: String(row.long_definition ?? '').trim(),
+      category: String(row.category ?? '').trim(),
     })).filter((row) => row.id && row.term && row.short_definition)
 
     return NextResponse.json({ terms })

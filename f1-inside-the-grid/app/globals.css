@@ -43,3 +43,105 @@ a:hover {
 button {
   font-family: inherit;
 }
+
+/* Utilities & Accents */
+.accent-text {
+  color: #e8002d;
+}
+
+/* History Section Stats */
+.stat-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+  gap: 12px;
+  margin-bottom: 2.5rem;
+}
+
+.stat-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-top: 2px solid #e8002d;
+  border-radius: 8px;
+  padding: 1rem;
+}
+
+.stat-num {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 0.72rem;
+  color: rgba(255,255,255,0.4);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  margin-top: 4px;
+  font-weight: 600;
+}
+
+/* Timeline */
+.timeline {
+  position: relative;
+  padding-left: 2rem;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 6px;
+  bottom: 6px;
+  width: 1px;
+  background: rgba(232,0,45,0.25);
+}
+
+.fact-item {
+  position: relative;
+  margin-bottom: 2rem;
+}
+
+.fact-item:last-child { 
+  margin-bottom: 0; 
+}
+
+.fact-dot {
+  position: absolute;
+  left: -1.85rem;
+  top: 5px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #e8002d;
+  border: 2px solid #0d0006;
+  z-index: 1;
+}
+
+.fact-year {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #e8002d;
+  margin-bottom: 4px;
+}
+
+.fact-title {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.fact-body {
+  font-size: 0.83rem;
+  color: rgba(255,255,255,0.5);
+  line-height: 1.65;
+}
+
+.fact-body strong {
+  color: rgba(255,255,255,0.75);
+  font-weight: 600;
+}

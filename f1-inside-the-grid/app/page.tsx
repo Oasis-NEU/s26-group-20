@@ -101,7 +101,7 @@ export default function AppPage() {
                   }
                   onClick={() => setActiveTab('overview')}
                 >
-                  Our Goal
+                  Our Mission
                 </button>
                 <button
                   className={
