@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import './app.css'
 import { CarsDriversSection } from './components/CarsDriversSection'
 import {
@@ -13,15 +12,14 @@ import {
 type TabId = 'overview' | 'learn' | 'history' | 'database'
 
 export default function AppPage() {
-  const searchParams = useSearchParams()
   const [activeTab, setActiveTab] = useState<TabId>('overview')
 
   useEffect(() => {
-    const tab = searchParams.get('tab')
+    const tab = new URLSearchParams(window.location.search).get('tab')
     if (tab === 'overview' || tab === 'learn' || tab === 'history' || tab === 'database') {
       setActiveTab(tab)
     }
-  }, [searchParams])
+  }, [])
 
   return (
     <div className="app">
