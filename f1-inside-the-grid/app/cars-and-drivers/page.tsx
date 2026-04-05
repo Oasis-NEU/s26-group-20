@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { formatPoints, formatRate, initials, nationalityToFlag, TEAM_ACCENT_BY_NAME } from '@/lib/utils'
 import type { Constructor, Driver } from '@/lib/types'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -165,7 +166,11 @@ export default async function CarsAndDriversPage({ searchParams }: Props) {
             <article key={driver.id} style={{ border: '1px solid var(--border)', borderRadius: '12px', padding: '12px' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start' }}>
                 <div>
-                  <h3 style={{ lineHeight: 1.1 }}>{driver.name}</h3>
+                  <h3 style={{ lineHeight: 1.1 }}>
+                    <Link href={`/drivers/${driver.id}`} style={{ color: 'var(--text)' }}>
+                      {driver.name}
+                    </Link>
+                  </h3>
                   <p style={{ color: 'var(--muted)', fontSize: '14px' }}>
                     {nationalityToFlag(driver.nationality)} {driver.nationality}
                   </p>
@@ -223,7 +228,11 @@ export default async function CarsAndDriversPage({ searchParams }: Props) {
               {allTimeLeaders.map((driver, index) => (
                 <tr key={driver.id}>
                   <td style={{ padding: '10px', borderBottom: '1px solid var(--border)' }}>{index + 1}</td>
-                  <td style={{ padding: '10px', borderBottom: '1px solid var(--border)' }}>{driver.name}</td>
+                  <td style={{ padding: '10px', borderBottom: '1px solid var(--border)' }}>
+                    <Link href={`/drivers/${driver.id}`} style={{ color: 'var(--text)' }}>
+                      {driver.name}
+                    </Link>
+                  </td>
                   <td style={{ padding: '10px', borderBottom: '1px solid var(--border)' }}>{driver.race_wins.toLocaleString()}</td>
                   <td style={{ padding: '10px', borderBottom: '1px solid var(--border)' }}>{driver.pole_positions.toLocaleString()}</td>
                   <td style={{ padding: '10px', borderBottom: '1px solid var(--border)' }}>
