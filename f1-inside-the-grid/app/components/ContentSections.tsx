@@ -1,3 +1,13 @@
+"use client"
+
+import { useEffect, useState } from 'react'
+
+type GlossaryTerm = {
+  id: string
+  term: string
+  short_definition: string
+}
+
 export function OverviewSection() {
   return (
     <div className="panel panel-overview">
@@ -25,6 +35,40 @@ export function OverviewSection() {
 }
 
 export function LearnSection() {
+  const [terms, setTerms] = useState<GlossaryTerm[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    let cancelled = false
+
+    async function loadGlossary() {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/glossary')
+        if (!response.ok) throw new Error(`HTTP ${response.status}`)
+        const payload = (await response.json()) as { terms?: GlossaryTerm[] }
+        if (!cancelled) {
+          setTerms(Array.isArray(payload.terms) ? payload.terms : [])
+          setError(null)
+        }
+      } catch {
+        if (!cancelled) {
+          setError('Unable to load jargon from glossary right now.')
+          setTerms([])
+        }
+      } finally {
+        if (!cancelled) setLoading(false)
+      }
+    }
+
+    loadGlossary()
+
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
   return (
     <div className="panel panel-learn">
       <h2>Learn the Language of F1</h2>
@@ -33,62 +77,26 @@ export function LearnSection() {
         lost on a race weekend again.
       </p>
       <div className="jargon-grid">
-        <div className="jargon-card">
-          <h3>DRS (Drag Reduction System)</h3>
-          <p>
-            A movable rear wing flap that opens in specific zones to reduce
-            drag and increase top speed when chasing another car.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>Undercut</h3>
-          <p>
-            Pitting earlier than the car ahead to use fresher tyres and gain
-            enough lap time to overtake when they stop.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>Overcut</h3>
-          <p>
-            Staying out longer on older tyres, using clear air and race pace to
-            jump cars that pitted before you.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>Dirty Air</h3>
-          <p>
-            Turbulent airflow coming off a car ahead that reduces grip and
-            makes following closely through corners difficult.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>Parc Ferm&eacute;</h3>
-          <p>
-            A secure area where cars are held before and after qualifying and
-            races; teams cannot make major setup changes here.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>Power Unit</h3>
-          <p>
-            Modern F1 engines: a 1.6L turbo V6 plus hybrid systems that recover
-            energy from braking and exhaust gases.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>Delta</h3>
-          <p>
-            The time difference a driver must respect, often under safety car
-            or virtual safety car conditions.
-          </p>
-        </div>
-        <div className="jargon-card">
-          <h3>The Grid</h3>
-          <p>
-            The starting formation of cars before lights out, ordered by
-            qualifying times and penalties.
-          </p>
-        </div>
+        {loading && (
+          <div className="jargon-card">
+            <h3>Loading glossary...</h3>
+            <p>Pulling the latest F1 terms from the database.</p>
+          </div>
+        )}
+
+        {!loading && error && (
+          <div className="jargon-card">
+            <h3>Glossary unavailable</h3>
+            <p>{error}</p>
+          </div>
+        )}
+
+        {!loading && !error && terms.map((item) => (
+          <div className="jargon-card" key={item.id}>
+            <h3>{item.term}</h3>
+            <p>{item.short_definition}</p>
+          </div>
+        ))}
       </div>
     </div>
   )
