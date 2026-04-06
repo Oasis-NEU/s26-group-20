@@ -63,10 +63,11 @@ export default function AppPage() {
           <>
             <section className="hero">
               <div className="hero-visual">
-                <div className="neon-track" />
-                <div className="hero-glow" />
-                <div className="hero-car">🏎️</div>
-                <div className="hero-driver">🏁</div>
+                <img
+                  className="hero-image"
+                  src="/HomepageImage.png"
+                  alt="Homepage hero image"
+                />
               </div>
               <div className="hero-content">
                 <p className="hero-tagline">Welcome to</p>
