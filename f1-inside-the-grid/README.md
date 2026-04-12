@@ -1,36 +1,94 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# F1 Inside the Grid
 
-## Getting Started
+F1 Inside the Grid is a Next.js application designed to make Formula 1 easier to understand while still being useful to dedicated fans.
 
-First, run the development server:
+The app combines:
+
+- A newcomer-friendly mission section on the homepage
+- A glossary-driven learning experience
+- Historical context and key F1 facts
+- A data-heavy Cars and Drivers experience with profile pages
+
+## Tech Stack
+
+- Next.js 14 (App Router)
+- React 18 + TypeScript
+- Supabase (`@supabase/supabase-js`)
+
+## Core Routes
+
+- `/` - Homepage with hero and always-visible Our Mission section
+- `/learn` - F1 jargon and glossary content
+- `/history` - history and fun-facts experience
+- `/cars-and-drivers` - cars and drivers hub
+- `/drivers/[id]` - dynamic driver profile page
+- `/constructors/[ref]` - dynamic constructor profile page
+
+## API Routes
+
+- `/api/glossary` - returns glossary terms
+- `/api/cars-drivers` - returns summary stats, current grid, leaders, and constructor data
+
+## Environment Variables
+
+Create `.env.local` in this folder:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+```
+
+If these values are missing, server-side data fetches will fail.
+
+## Local Development
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Start the app:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. Open:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- http://localhost:3000
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Scripts
 
-## Learn More
+- `npm run dev` - run development server
+- `npm run build` - build for production
+- `npm run start` - start production server
+- `npm run lint` - run linting
 
-To learn more about Next.js, take a look at the following resources:
+## Project Structure (High Level)
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```text
+f1-inside-the-grid/
+	app/
+		api/
+			cars-drivers/route.ts
+			glossary/route.ts
+		cars-and-drivers/page.tsx
+		constructors/[ref]/page.tsx
+		drivers/[id]/page.tsx
+		history/page.tsx
+		learn/page.tsx
+		components/
+			CarsDriversSection.tsx
+			ContentSections.tsx
+			SiteNav.tsx
+		layout.tsx
+		page.tsx
+	lib/
+		supabase/server.ts
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Notes
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Navigation is route-based and shared globally through the layout.
+- Driver and constructor pages are linked from the Cars and Drivers flow.
