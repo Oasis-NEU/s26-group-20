@@ -1,8 +1,14 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useMemo, useState } from 'react'
 
-type CarsDriversTab = 'current-grid' | 'all-time-leaders' | 'constructors-2024' | 'search'
+type CarsDriversTab =
+  | 'current-grid'
+  | 'all-time-leaders'
+  | 'constructors-2024'
+  | 'search-drivers'
+  | 'search-constructors'
 
 type SummaryStats = {
   totalDrivers: number
@@ -32,9 +38,12 @@ type ConstructorRow = {
   id: string
   name: string
   nationality: string
+  constructor_ref: string
   flag: string
   profileUrl: string
   accentColor: string
+  first_season: number | null
+  last_season: number | null
 }
 
 type CarsDriversApiResponse = {
@@ -44,6 +53,7 @@ type CarsDriversApiResponse = {
   currentGrid: DriverRow[]
   allTimeLeaders: DriverRow[]
   constructors2024: ConstructorRow[]
+  allConstructors: ConstructorRow[]
 }
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || ''
@@ -164,19 +174,37 @@ function ConstructorsTab({ constructors }: { constructors: ConstructorRow[] }) {
   return (
     <div className="constructors-grid">
       {constructors.map((team) => (
-        <a
+        <Link
           key={team.id}
           href={team.profileUrl}
           className="constructor-card"
           style={{ borderLeftColor: team.accentColor }}
         >
           <h3>{team.name.toUpperCase()}</h3>
+          {team.first_season != null && team.last_season != null && (
+            <p
+              style={{
+                margin: '0.2rem 0 0',
+                color: '#a0a0aa',
+                fontSize: '0.78rem',
+                lineHeight: 1.2,
+              }}
+            >
+              {team.first_season === team.last_season ? (
+                team.first_season
+              ) : (
+                <>
+                  {team.first_season} &mdash; {team.last_season}
+                </>
+              )}
+            </p>
+          )}
           <p className="constructor-nationality">
             {team.flag} {team.nationality}
           </p>
           <span className="constructor-grid-badge">2024 GRID</span>
           <p className="constructor-link-hint">VIEW TEAM PROFILE -&gt;</p>
-        </a>
+        </Link>
       ))}
     </div>
   )
@@ -184,7 +212,8 @@ function ConstructorsTab({ constructors }: { constructors: ConstructorRow[] }) {
 
 export function CarsDriversSection() {
   const [activeTab, setActiveTab] = useState<CarsDriversTab>('current-grid')
-  const [searchTerm, setSearchTerm] = useState('')
+  const [driverSearchTerm, setDriverSearchTerm] = useState('')
+  const [constructorSearchTerm, setConstructorSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<CarsDriversApiResponse | null>(null)
@@ -217,7 +246,7 @@ export function CarsDriversSection() {
   const filteredSearchDrivers = useMemo(() => {
     if (!data) return []
 
-    const query = searchTerm.trim().toLowerCase()
+    const query = driverSearchTerm.trim().toLowerCase()
     if (!query) return data.allTimeLeaders
 
     return data.allTimeLeaders.filter((driver) => {
@@ -225,7 +254,18 @@ export function CarsDriversSection() {
         String(field || '').toLowerCase().includes(query),
       )
     })
-  }, [data, searchTerm])
+  }, [data, driverSearchTerm])
+
+  const filteredSearchConstructors = useMemo(() => {
+    if (!data) return []
+
+    const query = constructorSearchTerm.trim().toLowerCase()
+    if (!query) return data.allConstructors
+
+    return data.allConstructors.filter((team) =>
+      [team.name, team.nationality].some((field) => String(field || '').toLowerCase().includes(query)),
+    )
+  }, [data, constructorSearchTerm])
 
   const tabContent = useMemo(() => {
     if (!data) return null
@@ -238,12 +278,16 @@ export function CarsDriversSection() {
       return <AllTimeLeadersTab drivers={data.allTimeLeaders} />
     }
 
-    if (activeTab === 'search') {
+    if (activeTab === 'search-drivers') {
       return <AllTimeLeadersTab drivers={filteredSearchDrivers} />
     }
 
+    if (activeTab === 'search-constructors') {
+      return <ConstructorsTab constructors={filteredSearchConstructors} />
+    }
+
     return <ConstructorsTab constructors={data.constructors2024} />
-  }, [activeTab, data, filteredSearchDrivers])
+  }, [activeTab, data, filteredSearchDrivers, filteredSearchConstructors])
 
   return (
     <section className="cars-page">
@@ -302,15 +346,23 @@ export function CarsDriversSection() {
             </button>
             <button
               className={
-                activeTab === 'search' ? 'cars-tab-btn active' : 'cars-tab-btn'
+                activeTab === 'search-drivers' ? 'cars-tab-btn active' : 'cars-tab-btn'
               }
-              onClick={() => setActiveTab('search')}
+              onClick={() => setActiveTab('search-drivers')}
             >
-              SEARCH
+              SEARCH DRIVERS
+            </button>
+            <button
+              className={
+                activeTab === 'search-constructors' ? 'cars-tab-btn active' : 'cars-tab-btn'
+              }
+              onClick={() => setActiveTab('search-constructors')}
+            >
+              SEARCH TEAMS
             </button>
           </div>
 
-          {activeTab === 'search' && (
+          {activeTab === 'search-drivers' && (
             <div
               style={{
                 marginTop: '0.75rem',
@@ -323,8 +375,8 @@ export function CarsDriversSection() {
               <input
                 id="cars-search"
                 type="search"
-                value={searchTerm}
-                onChange={(event) => setSearchTerm(event.target.value)}
+                value={driverSearchTerm}
+                onChange={(event) => setDriverSearchTerm(event.target.value)}
                 placeholder="Search 868 drivers by name, nationality, or code..."
                 style={{
                   width: '100%',
@@ -338,6 +390,47 @@ export function CarsDriversSection() {
                   letterSpacing: '0.08em',
                 }}
               />
+            </div>
+          )}
+
+          {activeTab === 'search-constructors' && (
+            <div
+              style={{
+                marginTop: '0.75rem',
+                marginBottom: '0.25rem',
+              }}
+            >
+              <label htmlFor="cars-teams-search" style={{ display: 'none' }}>
+                Search constructors
+              </label>
+              <input
+                id="cars-teams-search"
+                type="search"
+                value={constructorSearchTerm}
+                onChange={(event) => setConstructorSearchTerm(event.target.value)}
+                placeholder="Search 212 constructor teams by name or nationality..."
+                style={{
+                  width: '100%',
+                  borderRadius: '999px',
+                  border: '1px solid rgba(232, 0, 13, 0.3)',
+                  background: '#0f0708',
+                  color: 'rgba(230, 228, 228, 0.9)',
+                  padding: '0.62rem 0.95rem',
+                  fontFamily: 'inherit',
+                  fontSize: '0.88rem',
+                  letterSpacing: '0.08em',
+                }}
+              />
+              <p
+                style={{
+                  margin: '0.45rem 0 0',
+                  fontSize: '0.78rem',
+                  color: '#a0a0aa',
+                  letterSpacing: '0.08em',
+                }}
+              >
+                {filteredSearchConstructors.length} / {data?.allConstructors?.length ?? 212}
+              </p>
             </div>
           )}
 

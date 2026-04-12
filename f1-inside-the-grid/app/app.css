@@ -995,6 +995,10 @@
   border-left: 3px solid #2a1014;
 }
 
+.constructor-card:hover {
+  border-color: rgba(255, 0, 60, 0.45);
+}
+
 .constructor-card h3 {
   margin: 0;
   letter-spacing: 0.08em;
