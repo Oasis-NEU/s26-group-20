@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react'
 
-type CarsDriversTab = 'current-grid' | 'all-time-leaders' | 'constructors-2024'
+type CarsDriversTab = 'current-grid' | 'all-time-leaders' | 'constructors-2024' | 'search'
 
 type SummaryStats = {
   totalDrivers: number
@@ -184,6 +184,7 @@ function ConstructorsTab({ constructors }: { constructors: ConstructorRow[] }) {
 
 export function CarsDriversSection() {
   const [activeTab, setActiveTab] = useState<CarsDriversTab>('current-grid')
+  const [searchTerm, setSearchTerm] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [data, setData] = useState<CarsDriversApiResponse | null>(null)
@@ -213,6 +214,19 @@ export function CarsDriversSection() {
 
   const summary = data?.summary
 
+  const filteredSearchDrivers = useMemo(() => {
+    if (!data) return []
+
+    const query = searchTerm.trim().toLowerCase()
+    if (!query) return data.allTimeLeaders
+
+    return data.allTimeLeaders.filter((driver) => {
+      return [driver.name, driver.nationality, driver.code].some((field) =>
+        String(field || '').toLowerCase().includes(query),
+      )
+    })
+  }, [data, searchTerm])
+
   const tabContent = useMemo(() => {
     if (!data) return null
 
@@ -224,8 +238,12 @@ export function CarsDriversSection() {
       return <AllTimeLeadersTab drivers={data.allTimeLeaders} />
     }
 
+    if (activeTab === 'search') {
+      return <AllTimeLeadersTab drivers={filteredSearchDrivers} />
+    }
+
     return <ConstructorsTab constructors={data.constructors2024} />
-  }, [activeTab, data])
+  }, [activeTab, data, filteredSearchDrivers])
 
   return (
     <section className="cars-page">
@@ -282,7 +300,46 @@ export function CarsDriversSection() {
             >
               2024 CONSTRUCTORS
             </button>
+            <button
+              className={
+                activeTab === 'search' ? 'cars-tab-btn active' : 'cars-tab-btn'
+              }
+              onClick={() => setActiveTab('search')}
+            >
+              SEARCH
+            </button>
           </div>
+
+          {activeTab === 'search' && (
+            <div
+              style={{
+                marginTop: '0.75rem',
+                marginBottom: '0.25rem',
+              }}
+            >
+              <label htmlFor="cars-search" style={{ display: 'none' }}>
+                Search drivers
+              </label>
+              <input
+                id="cars-search"
+                type="search"
+                value={searchTerm}
+                onChange={(event) => setSearchTerm(event.target.value)}
+                placeholder="Search 868 drivers by name, nationality, or code..."
+                style={{
+                  width: '100%',
+                  borderRadius: '999px',
+                  border: '1px solid rgba(232, 0, 13, 0.3)',
+                  background: '#0f0708',
+                  color: 'rgba(230, 228, 228, 0.9)',
+                  padding: '0.62rem 0.95rem',
+                  fontFamily: 'inherit',
+                  fontSize: '0.88rem',
+                  letterSpacing: '0.08em',
+                }}
+              />
+            </div>
+          )}
 
           <div className="cars-tab-panel">{tabContent}</div>
         </>
