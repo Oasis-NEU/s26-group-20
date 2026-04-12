@@ -179,11 +179,15 @@ function normalizeDriverRecord(record: Record<string, unknown>) {
 function normalizeConstructorRecord(record: Record<string, unknown>) {
   const name = String(pickValue(record, ['name', 'constructor_name'], '')).trim()
   const nationality = String(pickValue(record, ['nationality', 'country', 'country_name'], 'Unknown'))
+  const constructorRef = String(
+    pickValue(record, ['constructor_ref', 'constructorref', 'constructorRef', 'ref'], slugify(name)),
+  ).trim()
 
   return {
     id: String(pickValue(record, ['constructorid', 'constructor_id', 'id'], slugify(name))),
     name,
     nationality,
+    constructor_ref: constructorRef || slugify(name),
     flag: resolveFlag(nationality),
     slug: slugify(name),
     accentColor: TEAM_ACCENT_BY_NAME[normalize(name)] || '#2a1014',
@@ -194,14 +198,50 @@ export async function GET() {
   try {
     const supabase = createClient()
 
-    const [{ data: driverRows, error: driverError }, { data: constructorRows, error: constructorError }] =
+    const [
+      { data: driverRows, error: driverError },
+      { data: constructorRows, error: constructorError },
+      { data: allConstructorRows, error: allConstructorError },
+      { data: constructorSeasonRows, error: constructorSeasonError },
+    ] =
       await Promise.all([
         supabase.from('v_driver_full').select('*'),
         supabase.from('ergast_constructors').select('*'),
+        supabase
+          .from('ergast_constructors')
+          .select('id,name,nationality,constructor_ref')
+          .order('name', { ascending: true }),
+        supabase.from('constructor_results').select('constructor_id,races!inner(season_year)'),
       ])
 
-    if (driverError || constructorError) {
-      throw new Error(driverError?.message || constructorError?.message || 'Failed to fetch Supabase data.')
+    if (driverError || constructorError || allConstructorError || constructorSeasonError) {
+      throw new Error(
+        driverError?.message ||
+          constructorError?.message ||
+          allConstructorError?.message ||
+          constructorSeasonError?.message ||
+          'Failed to fetch Supabase data.',
+      )
+    }
+
+    const constructorYearsById = new Map<string, { first_season: number; last_season: number }>()
+    for (const row of constructorSeasonRows || []) {
+      const seasonRow = row as { constructor_id?: unknown; races?: { season_year?: unknown } | Array<{ season_year?: unknown }> }
+      const constructorId = String(seasonRow.constructor_id ?? '')
+      if (!constructorId) continue
+
+      const seasonValue = Array.isArray(seasonRow.races)
+        ? Number(seasonRow.races[0]?.season_year)
+        : Number(seasonRow.races?.season_year)
+      if (!Number.isFinite(seasonValue)) continue
+
+      const current = constructorYearsById.get(constructorId)
+      if (!current) {
+        constructorYearsById.set(constructorId, { first_season: seasonValue, last_season: seasonValue })
+      } else {
+        current.first_season = Math.min(current.first_season, seasonValue)
+        current.last_season = Math.max(current.last_season, seasonValue)
+      }
     }
 
     const drivers = (driverRows || []).map((row) => normalizeDriverRecord(row as Record<string, unknown>)).filter((driver) => driver.name)
@@ -209,6 +249,10 @@ export async function GET() {
       .map((row) => normalizeConstructorRecord(row as Record<string, unknown>))
       .filter((team) => team.name)
       .filter((team) => KNOWN_2024_CONSTRUCTORS.some((known) => normalize(known) === normalize(team.name)))
+
+    const allConstructors = (allConstructorRows || [])
+      .map((row) => normalizeConstructorRecord(row as Record<string, unknown>))
+      .filter((team) => team.name)
 
     const uniqueDriverIds = new Set(drivers.map((driver) => driver.id))
     const worldChampions = new Set(drivers.filter((driver) => driver.championships > 0).map((driver) => driver.id))
@@ -231,10 +275,25 @@ export async function GET() {
         profileUrl: `/drivers/${driver.slug}`,
       }))
 
-    const constructors2024 = constructors.map((team) => ({
-      ...team,
-      profileUrl: `/constructors/${team.slug}`,
-    }))
+    const constructors2024 = constructors.map((team) => {
+      const years = constructorYearsById.get(String(team.id))
+      return {
+        ...team,
+        profileUrl: `/constructors/${team.constructor_ref}`,
+        first_season: years?.first_season ?? null,
+        last_season: years?.last_season ?? null,
+      }
+    })
+
+    const allConstructorsWithYears = allConstructors.map((team) => {
+      const years = constructorYearsById.get(String(team.id))
+      return {
+        ...team,
+        profileUrl: `/constructors/${team.constructor_ref}`,
+        first_season: years?.first_season ?? null,
+        last_season: years?.last_season ?? null,
+      }
+    })
 
     return NextResponse.json({
       status: 'ok',
@@ -247,6 +306,7 @@ export async function GET() {
       currentGrid,
       allTimeLeaders,
       constructors2024,
+      allConstructors: allConstructorsWithYears,
     })
   } catch (error) {
     return NextResponse.json(

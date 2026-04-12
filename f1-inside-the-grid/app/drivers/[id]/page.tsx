@@ -324,7 +324,7 @@ export default async function DriverProfilePage({
             Home
           </Link>
           <span style={{ color: '#555' }}>{'>'}</span>
-          <Link href='/?tab=database' style={{ color: 'var(--muted)' }}>
+          <Link href='/cars-and-drivers' style={{ color: 'var(--muted)' }}>
             Cars &amp; Drivers
           </Link>
           <span style={{ color: '#555' }}>{'>'}</span>
