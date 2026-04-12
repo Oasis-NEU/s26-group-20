@@ -1,25 +1,9 @@
 'use client'
 
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-import {
-  HistorySection,
-  LearnSection,
-  OverviewSection,
-} from './components/ContentSections'
-
-type TabId = 'overview' | 'learn' | 'history'
+import { OverviewSection } from './components/ContentSections'
 
 export default function AppPage() {
-  const [activeTab, setActiveTab] = useState<TabId>('overview')
-
-  useEffect(() => {
-    const tab = new URLSearchParams(window.location.search).get('tab')
-    if (tab === 'overview' || tab === 'learn' || tab === 'history') {
-      setActiveTab(tab)
-    }
-  }, [])
-
   return (
     <>
       <main className="app-main">
@@ -40,12 +24,9 @@ export default function AppPage() {
               and season.
             </p>
             <div className="hero-actions">
-              <button
-                className="primary-cta"
-                onClick={() => setActiveTab('learn')}
-              >
+              <Link className="primary-cta" href="/learn">
                 Start learning F1
-              </button>
+              </Link>
               <Link className="secondary-cta" href="/cars-and-drivers">
                 Explore cars &amp; drivers
               </Link>
@@ -54,38 +35,7 @@ export default function AppPage() {
         </section>
 
         <section className="tabs-section">
-          <div className="tab-list">
-            <button
-              className={
-                activeTab === 'overview' ? 'tab-button active' : 'tab-button'
-              }
-              onClick={() => setActiveTab('overview')}
-            >
-              Our Mission
-            </button>
-            <button
-              className={
-                activeTab === 'learn' ? 'tab-button active' : 'tab-button'
-              }
-              onClick={() => setActiveTab('learn')}
-            >
-              F1 Jargon
-            </button>
-            <button
-              className={
-                activeTab === 'history' ? 'tab-button active' : 'tab-button'
-              }
-              onClick={() => setActiveTab('history')}
-            >
-              History &amp; Fun Facts
-            </button>
-          </div>
-
-          <div className="tab-panels">
-            {activeTab === 'overview' && <OverviewSection />}
-            {activeTab === 'learn' && <LearnSection />}
-            {activeTab === 'history' && <HistorySection />}
-          </div>
+          <OverviewSection />
         </section>
       </main>
 
