@@ -24,7 +24,7 @@ export function OverviewSection() {
             </h3>
           </div>
           <p>
-            Every sport has its dialect. F1's is dense with engineering and strategy terms that insiders throw around at race speed. We built a real paddock glossary — not watered-down summaries, but the actual vocabulary used by engineers, strategists, and commentators. From undercut to parc fermé, you'll understand every call.
+            Every sport has its dialect. F1&apos;s is dense with engineering and strategy terms that insiders throw around at race speed. We built a real paddock glossary — not watered-down summaries, but the actual vocabulary used by engineers, strategists, and commentators. From undercut to parc fermé, you&apos;ll understand every call.
           </p>
         </div>
 
@@ -36,7 +36,7 @@ export function OverviewSection() {
             </h3>
           </div>
           <p>
-            F1 didn't arrive fully formed. It evolved from tin-sheet cars racing on public roads to 200mph carbon fibre machines governed by a thousand regulations. We trace that arc — the eras of raw danger, the landmark rule changes, the dynasties, the upsets — so you understand not just what F1 is, but how it got here.
+            F1 didn&apos;t arrive fully formed. It evolved from tin-sheet cars racing on public roads to 200mph carbon fibre machines governed by a thousand regulations. We trace that arc — the eras of raw danger, the landmark rule changes, the dynasties, the upsets — so you understand not just what F1 is, but how it got here.
           </p>
         </div>
 
@@ -48,7 +48,7 @@ export function OverviewSection() {
             </h3>
           </div>
           <p>
-            Cars and drivers don't exist in isolation. They're connected through constructor histories, season results, teammate comparisons, and championship battles. Our living database links it all — stats that update with every race, team lineages going back decades, and performance metrics that tell the story numbers alone can't.
+            Cars and drivers don&apos;t exist in isolation. They&apos;re connected through constructor histories, season results, teammate comparisons, and championship battles. Our living database links it all — stats that update with every race, team lineages going back decades, and performance metrics that tell the story numbers alone can&apos;t.
           </p>
         </div>
       </div>
@@ -58,7 +58,7 @@ export function OverviewSection() {
           <span className="audience-kicker">For the newcomer</span>
           <h3>Start from zero, go somewhere fast</h3>
           <p>
-            You don't need a background in engineering or a childhood watching races. We built an entry point that respects your intelligence without drowning you in detail. Pick up the jargon. Read the origin story. Follow your first season with context that makes every race make sense.
+            You don&apos;t need a background in engineering or a childhood watching races. We built an entry point that respects your intelligence without drowning you in detail. Pick up the jargon. Read the origin story. Follow your first season with context that makes every race make sense.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ export function OverviewSection() {
           <span className="audience-kicker">For the devoted fan</span>
           <h3>Go deeper than the broadcast</h3>
           <p>
-            You already know the teams and the talking points. We're for the moments when you want to go further — the technical detail behind a setup call, the historical precedent for a rule change, the stat that reframes a rivalry. This is the layer beneath the TV coverage.
+            You already know the teams and the talking points. We&apos;re for the moments when you want to go further — the technical detail behind a setup call, the historical precedent for a rule change, the stat that reframes a rivalry. This is the layer beneath the TV coverage.
           </p>
         </div>
       </div>
@@ -248,7 +248,7 @@ export function HistorySection() {
           <div className="fact-year">Always — Two championships, one sport</div>
           <h3 className="fact-title">Drivers vs constructors</h3>
           <p className="fact-body">
-            Every team competes on two fronts simultaneously. Drivers fight each other for the Drivers' Championship, while the points they score also count toward their constructor's tally in the separate Constructors' Championship — meaning a single race result carries double the strategic weight.
+            Every team competes on two fronts simultaneously. Drivers fight each other for the Drivers&apos; Championship, while the points they score also count toward their constructor&apos;s tally in the separate Constructors&apos; Championship — meaning a single race result carries double the strategic weight.
           </p>
         </div>
 
@@ -257,7 +257,7 @@ export function HistorySection() {
           <div className="fact-year">Engineering — Physics at the limit</div>
           <h3 className="fact-title">Theoretically, upside down</h3>
           <p className="fact-body">
-            Modern F1 cars generate so much aerodynamic downforce they could theoretically drive upside down through a tunnel at racing speed. That same grip allows them to corner at forces exceeding 6G — roughly six times a driver's own body weight pressing against them through every high-speed bend.
+            Modern F1 cars generate so much aerodynamic downforce they could theoretically drive upside down through a tunnel at racing speed. That same grip allows them to corner at forces exceeding 6G — roughly six times a driver&apos;s own body weight pressing against them through every high-speed bend.
           </p>
         </div>
 
@@ -284,7 +284,7 @@ export function HistorySection() {
           <div className="fact-year">Our database — Why seasons matter</div>
           <h3 className="fact-title">Context is everything in F1</h3>
           <p className="fact-body">
-            The technical regulations in F1 can change so dramatically from one year to the next that a dominant car one season can become uncompetitive the next. New rules rewrite the performance order. That's why our entire database is organised by season — because in F1, context is everything.
+            The technical regulations in F1 can change so dramatically from one year to the next that a dominant car one season can become uncompetitive the next. New rules rewrite the performance order. That&apos;s why our entire database is organised by season — because in F1, context is everything.
           </p>
         </div>
       </div>

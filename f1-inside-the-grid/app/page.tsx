@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { OverviewSection } from './components/ContentSections'
 
@@ -9,10 +10,13 @@ export default function AppPage() {
       <main className="app-main">
         <section className="hero">
           <div className="hero-visual">
-            <img
+            <Image
               className="hero-image"
               src="/HomepageImage.png"
               alt="Homepage hero image"
+              width={1200}
+              height={800}
+              priority
             />
           </div>
           <div className="hero-content">
